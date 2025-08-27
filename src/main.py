@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 
-from src.versions.api.routes import index as apiRoutes
+from src.versions.api.routes import gateway_routes
+from src.versions.api.routes import health_routes
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello world!"}
+# health check routes
+app.include_router(health_routes.router, prefix="/api")
 
-app.include_router(apiRoutes.router, prefix="/api")
+# gateway routes
+app.include_router(gateway_routes.router, prefix="/api")
