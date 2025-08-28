@@ -1,13 +1,9 @@
 from pydantic import BaseModel
+from typing import Any, List
 
-class GatewayLatencyRequest(BaseModel):
+class GatewayRequest(BaseModel):
     query: str
 
-class GatewayLatencyResponse(BaseModel):
-    message: str
-
-class GatewayRaceRequest(BaseModel):
-    query: str
-
-class GatewayRaceResponse(BaseModel):
-    message: str
+class GatewayResponse(BaseModel):
+    service: str
+    content: dict
