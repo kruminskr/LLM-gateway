@@ -6,6 +6,7 @@ from .....core.llm_config import LLM_CONFIG
 
 class AIService:
     # add exception handling - fallback service
+    # if fastest fails, the route to the second fastest
     async def gateway_latency(self, content: str):
         async with httpx.AsyncClient() as client:
             tasks = [self.measure_latency(client, provider) for provider in LLM_CONFIG.keys()]
@@ -45,6 +46,7 @@ class AIService:
         return response
     
     # add exception handling - fallback service
+    # if fastest fails, restart the service again?
     async def gateway_race(self, content: str):
         async with httpx.AsyncClient() as client:
             tasks = [
@@ -68,8 +70,6 @@ class AIService:
     
     async def llm_api_request(self, client, provider, content) -> dict:
         headers = LLM_CONFIG[provider]["headers"]
-
-        print(f"pinging {provider}...")
 
         body = {
             **LLM_CONFIG[provider]["body"],
