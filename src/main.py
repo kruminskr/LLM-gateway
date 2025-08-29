@@ -9,4 +9,4 @@ app = FastAPI()
 app.include_router(health_routes.router, prefix="/api")
 
 # gateway routes
-app.include_router(gateway_routes.router, prefix="/api")
+app.include_router(gateway_routes.router, prefix="/api/gateway")
