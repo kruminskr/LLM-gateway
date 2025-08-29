@@ -16,6 +16,8 @@ GEMINI_MODEL = os.environ.get("GEMINI_MODEL")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GEMINI_API_URL = os.environ.get("GEMINI_API_URL")
 
+ONNX_API_URL = os.environ.get("ONNX_API_URL")
+
 LLM_CONFIG = {
     "grok": {
         "url": GROK_API_URL,
@@ -47,6 +49,15 @@ LLM_CONFIG = {
         "body": {
             "model": GEMINI_MODEL,
             "stream": False,
+        }
+    },
+    "onnx": {
+        "url": ONNX_API_URL,
+        "headers": {
+            # 
+        },
+        "body": {
+            # 
         }
     }
 }
