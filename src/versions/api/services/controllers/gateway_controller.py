@@ -5,13 +5,20 @@ import time
 from .....core.llm_config import LLM_CONFIG
 
 class AIService:
-    # add exception handling - fallback service
-    # if fastest fails, the route to the second fastest
+    # cons:
+    # if one service is really slow the other takss wait on this service
+    # request to each serivce and another request to the fastest 
+
+    # TO-DO? when first task is completed stop the rest of the tasks, this kind of defeats the purpose
     async def gateway_latency(self, content: str):
         async with httpx.AsyncClient() as client:
-            tasks = [self.measure_latency(client, provider) for provider in LLM_CONFIG.keys()]
+            tasks = [
+                asyncio.create_task(
+                    asyncio.wait_for(self.measure_latency(client, provider), timeout=3.0)
+                )
+                for provider in LLM_CONFIG.keys()
+            ]
 
-            # TO-DO? when first task is completed stop the rest of the tasks, this kind of defeats the purpose
             latencies = await asyncio.gather(*tasks, return_exceptions=True)
 
             filtered_latencies = [
@@ -45,8 +52,6 @@ class AIService:
 
         return response
     
-    # add exception handling - fallback service
-    # if fastest fails, restart the service again?
     async def gateway_race(self, content: str):
         async with httpx.AsyncClient() as client:
             tasks = [
@@ -54,19 +59,27 @@ class AIService:
                 for provider in LLM_CONFIG.keys()
             ]            
 
-            async for completed_task in asyncio.as_completed(tasks):
-                provider, llm_response = await completed_task
+        while tasks:
+            done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            
+            for task in done:
+                try:
+                    provider, llm_response = await task
+                    
+                    for pending_task in pending:
+                        pending_task.cancel()
 
-                for task in tasks:
-                    if not task.done():
-                        task.cancel()
-
-                result = {
-                    "service": provider,
-                    "content": llm_response
-                }
-
-                return result
+                    result = {
+                        "service": provider,
+                        "content": llm_response
+                    }
+                    
+                    return result
+                    
+                except Exception:
+                    continue
+            
+            tasks = list(pending)
     
     async def llm_api_request(self, client, provider, content) -> dict:
         headers = LLM_CONFIG[provider]["headers"]
@@ -77,6 +90,9 @@ class AIService:
         }
         
         response = await client.post(LLM_CONFIG[provider]["url"], headers=headers, json=body)
+
+        print(f"Requesting {provider}")
+        print(f"Status code: {response.status_code}")
         
         response.raise_for_status()
 
