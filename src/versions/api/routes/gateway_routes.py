@@ -1,3 +1,5 @@
+import traceback
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from ....core.dependencies import get_ai_service
@@ -19,6 +21,7 @@ async def process_gateway_latency(request: GatewayRequest, ai_service: AIService
         return response
     except Exception as e:
         print(e)
+        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail="Error occurred while fetching data")
 
 @router.post("/race", response_model=GatewayResponse)
@@ -29,7 +32,10 @@ async def process_gateway_race(request: GatewayRequest, ai_service: AIService = 
         return response
     except Exception as e:
         print(e)
+        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail="Error occurred while fetching data")
     
+# path that checks redis for stored latencies and uses the fastest one
+
 
 
