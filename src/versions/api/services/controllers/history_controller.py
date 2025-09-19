@@ -3,6 +3,7 @@ import httpx
 from .....core.ai_api_config import LLM_CONFIG   
 from .....utiles.redis import redis_client
 from ..models.api_model import llm_api_request
+from .latency_controller import GatewayLatencyController
 
 class GatewayHistoryController:
     async def get_fastest_provider(self):
@@ -27,7 +28,8 @@ class GatewayHistoryController:
         fastest_provider = await self.get_fastest_provider()
 
         if fastest_provider is None: 
-            result = await self.gateway_latency(content) # šis
+            controller = GatewayLatencyController()
+            result = await controller.gateway_latency(content)
             return result
         
         async with httpx.AsyncClient() as client:
