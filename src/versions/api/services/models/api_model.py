@@ -8,7 +8,7 @@ async def llm_api_request(client, provider, content) -> dict:
         "messages": [{"role": "user", "content": content}]
     }
     
-    response = await client.post(LLM_CONFIG[provider]["url"], headers=headers, json=body)
+    response = await client.post(LLM_CONFIG[provider]["url"], headers=headers, json=body, timeout=30.0)
 
     response.raise_for_status()
 
