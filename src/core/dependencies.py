@@ -1,5 +1,3 @@
-from ..versions.api.services.controllers.gateway_controller import AIService
-
 from ..versions.api.services.controllers.history_controller import GatewayHistoryController
 from ..versions.api.services.controllers.latency_controller import GatewayLatencyController
 from ..versions.api.services.controllers.race_controller import GatewayRaceController

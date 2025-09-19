@@ -1,5 +1,3 @@
-import traceback
-
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..services.controllers.latency_controller import GatewayLatencyController
@@ -22,7 +20,6 @@ async def process_gateway_latency(request: GatewayRequest, gateway_latency_contr
         return response
     except Exception as e:
         print(e)
-        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail="Error occurred while fetching data")
 
 @router.post("/race", response_model=GatewayResponse)
@@ -33,7 +30,6 @@ async def process_gateway_race(request: GatewayRequest, gateway_race_controller:
         return response
     except Exception as e:
         print(e)
-        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail="Error occurred while fetching data")
     
 @router.post("/history")
@@ -44,6 +40,8 @@ async def process_gateway_history(request: GatewayRequest, gateway_history_contr
         return response
     except Exception as e:
         print(e)
-        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail="Error occurred while fetching data")
 
+# route from which i can retrive latency history?
+
+# route with complex latecny analysis - TTFT, OTPS?
