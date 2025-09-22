@@ -32,8 +32,8 @@ jobs:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
           IMAGE_SHA: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/bush/project-sys:latest .
-          docker build -t $ECR_REGISTRY/bush/project-sys:$IMAGE_SHA .
+          docker build -t $ECR_REGISTRY:latest .
+          docker build -t $ECR_REGISTRY:$IMAGE_SHA .
 
-          docker push $ECR_REGISTRY/bush/project-sys:latest     
-          docker push $ECR_REGISTRY/bush/project-sys:$IMAGE_SHA
+          docker push $ECR_REGISTRY:latest     
+          docker push $ECR_REGISTRY:$IMAGE_SHA
