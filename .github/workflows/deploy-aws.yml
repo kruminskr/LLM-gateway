@@ -37,3 +37,7 @@ jobs:
 
           docker push $ECR_REGISTRY:latest     
           docker push $ECR_REGISTRY:$IMAGE_SHA
+
+      - name: Force ECS Cluster deployment
+        run: |
+          aws ecs update-service --cluster llm-gateway-cluster --service gateway-sys-service --force-new-deployment
