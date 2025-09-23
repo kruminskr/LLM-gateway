@@ -10,6 +10,8 @@ from ..services.schemas.gateway_schemas import (
     GatewayRequest, GatewayResponse
 )
 
+from ....utiles.redis import redis_client
+
 router = APIRouter()
 
 @router.post("/latency", response_model=GatewayResponse)
@@ -41,6 +43,14 @@ async def process_gateway_history(request: GatewayRequest, gateway_history_contr
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Error occurred while fetching data")
+    
+@router.get("/test-redis")
+async def test_redis_connection():
+    try:
+        pong = await redis_client.ping()
+        return {"message": "✅ Redis connected", "pong": pong}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"❌ Redis connection failed: {e}")
 
 # route from which i can retrive latency history?
 
