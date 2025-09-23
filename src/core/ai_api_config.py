@@ -36,13 +36,13 @@ LLM_CONFIG = {
         }
     },
 
-    "onnx": {
-        "url": settings.ONNX_API_URL,
-        "headers": {
-            # 
-        },
-        "body": {
-            # 
-        }
-    }
+    # "onnx": {
+    #     "url": settings.ONNX_API_URL,
+    #     "headers": {
+    #         # 
+    #     },
+    #     "body": {
+    #         # 
+    #     }
+    # }
 }
